@@ -1,0 +1,34 @@
+server:
+  port: 1010
+spring:
+  application:
+    name: order-service
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  datasource:
+    url: jdbc:h2:mem:order-db
+    username: root
+    password: 123
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+resilience4j:
+  retry:
+    instances:
+      order-service:
+        # Maximum number of attempts (including the initial call as the first attempt)
+        max-attempts: 3
+        # Fixed wait duration between retry attempts
+        wait-duration: 1s
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+        ignore-exceptions:
+          - org.springframework.web.client.ResourceAccessException
