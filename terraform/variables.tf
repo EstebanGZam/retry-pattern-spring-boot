@@ -16,7 +16,7 @@ variable "resource_group_name" {
 variable "acr_name" {
   description = "Nombre del Azure Container Registry"
   type        = string
-  default     = "retry-pattern-acr"
+  default     = "retrypatternacr"
 }
 
 # Nombre del plan de App Service
