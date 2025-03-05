@@ -22,9 +22,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private static final String SERVICE_NAME = "order-service";
-    private static final String ADDRESS_SERVICE_URL = "http://localhost:9090/addresses/";
+    private static final String ADDRESS_SERVICE_URL = "http://address-service-env.eba-2zi2i87y.us-east-1.elasticbeanstalk.com/addresses/";
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
+
     @Retry(name = SERVICE_NAME, fallbackMethod = "fallbackMethod")
     public Type getOrderByPostCode(String orderNumber) {
         Order order = orderRepository.findByOrderNumber(orderNumber)

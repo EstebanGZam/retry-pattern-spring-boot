@@ -10,3 +10,10 @@ rate-service/target
 *.iws
 *.iml
 *.ipr
+/terraform/.terraform.lock.hcl
+/terraform/.terraform/providers/registry.terraform.io/hashicorp/azurerm/4.21.1/linux_amd64/LICENSE.txt
+/address-service/Procfile
+/order-service/Procfile
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+/terraform/.terraform/providers/registry.terraform.io/hashicorp/azurerm/4.21.1/linux_amd64/terraform-provider-azurerm_v4.21.1_x5

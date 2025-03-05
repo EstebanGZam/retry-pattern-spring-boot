@@ -1,24 +1,15 @@
 provider "azurerm" {
   features {}
-  subscription_id = ""
+  subscription_id = "2f04ea2a-6146-4799-984c-d5f971c91b16"
 }
 
-# Crea un grupo de recursos en Azure
+# Create a resource group in Azure
 resource "azurerm_resource_group" "retry_pattern" {
   name     = var.resource_group_name
   location = var.location
 }
 
-# Crea un Azure Container Registry (ACR) para almacenar las imágenes Docker
-resource "azurerm_container_registry" "retry_pattern" {
-  name                = var.acr_name
-  resource_group_name = azurerm_resource_group.retry_pattern.name
-  location            = azurerm_resource_group.retry_pattern.location
-  sku                 = "Basic"
-  admin_enabled       = true
-}
-
-# Crea un plan de App Service para los microservicios
+# Create an App Service plan for the microservices
 resource "azurerm_service_plan" "retry_pattern" {
   name                = var.app_service_plan_name
   location            = azurerm_resource_group.retry_pattern.location
@@ -27,7 +18,7 @@ resource "azurerm_service_plan" "retry_pattern" {
   sku_name            = "B1"
 }
 
-# Crea una App Service para el microservicio de direcciones
+# Create an App Service for the address microservice
 resource "azurerm_linux_web_app" "address_service" {
   name                = var.address_app_service_name
   location            = azurerm_resource_group.retry_pattern.location
@@ -36,25 +27,30 @@ resource "azurerm_linux_web_app" "address_service" {
 
   site_config {
     application_stack {
-      docker_image_name   = "${azurerm_container_registry.retry_pattern.login_server}/address-service:latest"
+      java_version = "17"       # Java version
+      java_server = "JAVA"     # Standalone Spring Boot application
+      java_server_version = "17"       # Same version as java_version
     }
   }
 
   auth_settings {
     enabled = true
     active_directory {
-      client_id     = ""
+      client_id     = "fa4ab745-1592-41cf-ac6d-31e20e9d221b"
       client_secret = ""
-      allowed_audiences = ["https://${azurerm_container_registry.retry_pattern.login_server}"]
+      allowed_audiences = ["https://retry-pattern-address-service-esteban.azurewebsites.net"]
     }
   }
 
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "WEBSITES_PORT" = "9090"  # Port on which your Spring Boot application listens
+    "JAVA_OPTS"                = "-Dserver.port=9090"
+    "SPRING_PROFILES_ACTIVE"   = "production"
   }
 }
 
-# Crea una App Service para el microservicio de órdenes
+# Create an App Service for the order microservice
 resource "azurerm_linux_web_app" "order_service" {
   name                = var.order_app_service_name
   location            = azurerm_resource_group.retry_pattern.location
@@ -63,20 +59,26 @@ resource "azurerm_linux_web_app" "order_service" {
 
   site_config {
     application_stack {
-      docker_image_name   = "${azurerm_container_registry.retry_pattern.login_server}/order-service:latest"
+      java_version = "17"       # Java version
+      java_server = "JAVA"     # Standalone Spring Boot application
+      java_server_version = "17"       # Same version as java_version
     }
   }
 
   auth_settings {
     enabled = true
     active_directory {
-      client_id     = ""
+      client_id     = "fa4ab745-1592-41cf-ac6d-31e20e9d221b"
       client_secret = ""
-      allowed_audiences = ["https://${azurerm_container_registry.retry_pattern.login_server}"]
+      allowed_audiences = ["https://retry-pattern-order-service-esteban.azurewebsites.net"]
     }
   }
 
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "WEBSITES_PORT" = "8081"  # Port on which your Spring Boot application listens
+    "JAVA_OPTS"                = "-Dserver.port=8081"
+    "SPRING_PROFILES_ACTIVE"   = "production"
+
   }
 }

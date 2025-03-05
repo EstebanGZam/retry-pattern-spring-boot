@@ -7,6 +7,8 @@ WORKDIR /app
 # Copiar el proyecto al contenedor
 COPY . .
 
+# Uncomment in case the image build doesn't work
+# RUN apt-get update && apt-get install -y maven
 # Construir el proyecto con Maven
 RUN ./mvnw clean package -DskipTests
 

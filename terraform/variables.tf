@@ -1,41 +1,34 @@
-# Ubicación de los recursos en Azure
+# Location of the resources in Azure
 variable "location" {
-  description = "Región de Azure donde se desplegarán los recursos"
+  description = "Azure region where the resources will be deployed"
   type        = string
   default     = "East US"
 }
 
-# Nombre del grupo de recursos
+# Name of the resource group
 variable "resource_group_name" {
-  description = "Nombre del grupo de recursos en Azure"
+  description = "Name of the resource group in Azure"
   type        = string
-  default     = "retry-pattern-resources"
+  default     = "retry-pattern-resources-esteban"
 }
 
-# Nombre del Azure Container Registry (ACR)
-variable "acr_name" {
-  description = "Nombre del Azure Container Registry"
-  type        = string
-  default     = "retrypatternacr"
-}
-
-# Nombre del plan de App Service
+# Name of the App Service plan
 variable "app_service_plan_name" {
-  description = "Nombre del plan de App Service"
+  description = "Name of the App Service plan"
   type        = string
-  default     = "retry-pattern-appserviceplan"
+  default     = "retry-pattern-appserviceplan-esteban"
 }
 
-# Nombre de la App Service para el microservicio de direcciones
+# Name of the App Service for the address microservice
 variable "address_app_service_name" {
-  description = "Nombre de la App Service para el microservicio de direcciones"
+  description = "Name of the App Service for the address microservice"
   type        = string
-  default     = "retry-pattern-address-service"
+  default     = "retry-pattern-address-service-esteban"
 }
 
-# Nombre de la App Service para el microservicio de órdenes
+# Name of the App Service for the order microservice
 variable "order_app_service_name" {
-  description = "Nombre de la App Service para el microservicio de órdenes"
+  description = "Name of the App Service for the order microservice"
   type        = string
-  default     = "retry-pattern-order-service"
+  default     = "retry-pattern-order-service-esteban"
 }
