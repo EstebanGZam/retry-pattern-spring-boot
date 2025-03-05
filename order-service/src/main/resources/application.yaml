@@ -30,5 +30,6 @@ resilience4j:
         wait-duration: 1s
         retry-exceptions:
           - org.springframework.web.client.HttpServerErrorException
-        ignore-exceptions:
           - org.springframework.web.client.ResourceAccessException
+        ignore-exceptions:
+          - org.springframework.web.client.HttpClientErrorException

@@ -1,13 +1,12 @@
 package github.io.truongbn.orderservice.service.impl;
 
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 
 import github.io.truongbn.orderservice.dto.AddressDTO;
 import github.io.truongbn.orderservice.model.Failure;
@@ -25,6 +24,7 @@ public class OrderServiceImpl implements OrderService {
     private static final String ADDRESS_SERVICE_URL = "http://address-service-env.eba-2zi2i87y.us-east-1.elasticbeanstalk.com/addresses/";
     private final OrderRepository orderRepository;
     private final RestTemplate restTemplate;
+    private final AtomicInteger successCounter = new AtomicInteger(0);
 
     @Retry(name = SERVICE_NAME, fallbackMethod = "fallbackMethod")
     public Type getOrderByPostCode(String orderNumber) {
@@ -37,15 +37,28 @@ public class OrderServiceImpl implements OrderService {
             ResponseEntity<AddressDTO> response = restTemplate.exchange(
                     (ADDRESS_SERVICE_URL + order.getPostalCode()), HttpMethod.GET, entity,
                     AddressDTO.class);
+
+            // Simulation of error 429 every 5 successful requests
+            if (response.getStatusCode().is2xxSuccessful()) {
+                if (successCounter.incrementAndGet() % 5 == 0) {
+                    throw new HttpClientErrorException(HttpStatus.TOO_MANY_REQUESTS, "Simulated 429 Error");
+                }
+            }
+
             Stream.ofNullable(response.getBody()).forEach(it -> {
                 order.setShippingState(it.getState());
                 order.setShippingCity(it.getCity());
             });
-        } catch (HttpServerErrorException e) {
+        } catch (HttpServerErrorException e) { // Transient Fault
             System.out.println("Retry due to http server error at: " + Instant.now());
             throw e;
-        } catch (ResourceAccessException e) {
+        } catch (ResourceAccessException e) { // Transient Fault
             System.out.println("Retry due to resource access at: " + Instant.now());
+            throw e;
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) { // No Transient Fault
+                System.out.println("Too many requests, not retrying: " + e.getStatusCode());
+            }
             throw e;
         }
         return order;
