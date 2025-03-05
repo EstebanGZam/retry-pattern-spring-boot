@@ -1,6 +1,6 @@
 provider "azurerm" {
   features {}
-  subscription_id = "2f04ea2a-6146-4799-984c-d5f971c91b16"
+  subscription_id = ""
 }
 
 # Create a resource group in Azure
@@ -27,16 +27,16 @@ resource "azurerm_linux_web_app" "address_service" {
 
   site_config {
     application_stack {
-      java_version = "17"       # Java version
-      java_server = "JAVA"     # Standalone Spring Boot application
-      java_server_version = "17"       # Same version as java_version
+      java_version = "17"
+      java_server = "JAVA"
+      java_server_version = "17"
     }
   }
 
   auth_settings {
     enabled = true
     active_directory {
-      client_id     = "fa4ab745-1592-41cf-ac6d-31e20e9d221b"
+      client_id     = ""
       client_secret = ""
       allowed_audiences = ["https://retry-pattern-address-service-esteban.azurewebsites.net"]
     }
@@ -44,7 +44,7 @@ resource "azurerm_linux_web_app" "address_service" {
 
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
-    "WEBSITES_PORT" = "9090"  # Port on which your Spring Boot application listens
+    "WEBSITES_PORT" = "9090"
     "JAVA_OPTS"                = "-Dserver.port=9090"
     "SPRING_PROFILES_ACTIVE"   = "production"
   }
@@ -59,9 +59,9 @@ resource "azurerm_linux_web_app" "order_service" {
 
   site_config {
     application_stack {
-      java_version = "17"       # Java version
-      java_server = "JAVA"     # Standalone Spring Boot application
-      java_server_version = "17"       # Same version as java_version
+      java_version = "17"
+      java_server = "JAVA"
+      java_server_version = "17"
     }
   }
 
@@ -76,7 +76,7 @@ resource "azurerm_linux_web_app" "order_service" {
 
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
-    "WEBSITES_PORT" = "8081"  # Port on which your Spring Boot application listens
+    "WEBSITES_PORT" = "8081"
     "JAVA_OPTS"                = "-Dserver.port=8081"
     "SPRING_PROFILES_ACTIVE"   = "production"
 
